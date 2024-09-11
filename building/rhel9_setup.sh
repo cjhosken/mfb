@@ -58,7 +58,9 @@ bash $MFB_DIR/dependencies/optix.sh --skip-license --exclude-subdir
 
 cp $SCRIPT_DIR/CMakePresets.json $MFB_DIR/source/CMakePresets.json
 
-cp -r $SCRIPT_DIR/deps/* $MFB_DIR/dependencies
+cp -r $SCRIPT_DIR/configs/linux_x64/* $MFB_DIR/dependencies
+mkdir $MFB_DIR/dependencies/bl_deps
+cp -r $SCRIPT_DIR/bl_deps/linux_x64/* $MFB_DIR/dependencies/bl_deps
 
 export PATH=/usr/local/cuda/bin:$PATH
 export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$MFB_DIR/dependencies/bl_deps/python/lib:$MFB_DIR/dependencies/bl_deps/boost/lib:$MFB_DIR/dependencies/bl_deps/materialx/lib:$MFB_DIR/dependencies/bl_deps/opensubdiv/lib:$MFB_DIR/dependencies/bl_deps/openimageio/lib:$MFB_DIR/dependencies/bl_deps/openvdb/lib:$MFB_DIR/dependencies/bl_deps/openexr/lib:$MFB_DIR/dependencies/bl_deps/imath/lib
