@@ -5,8 +5,8 @@ class MoonRayRenderEngine(bpy.types.HydraRenderEngine):
     bl_label = "MoonRay"
     bl_info = "Dreamworks' MoonRay Production Renderer integration"
 
-    bl_use_preview = True
-    bl_use_gpu_context = True
+    bl_use_preview = False
+    bl_use_gpu_context = False
     bl_use_materialx = False
 
     bl_delegate_id = "HdMoonrayRendererPlugin"
@@ -26,7 +26,7 @@ class MoonRayRenderEngine(bpy.types.HydraRenderEngine):
         # Update PATH and PXR_PLUGINPATH_NAME by expanding the current environment variables
         os.environ["PATH"] = os.path.join(rel, "bin") + ":" + os.environ.get("PATH", "")
         
-        os.environ["PXR_PLUGINPATH_NAME"] = os.path.join(rel, "plugin") + ":" + os.path.join(rel, "plugin", "pxr") + ":" + os.environ.get("PXR_PLUGINPATH_NAME", "")
+        os.environ["PXR_PLUGINPATH_NAME"] = os.path.join(rel, "plugin", "usd") + ":" + os.environ.get("PXR_PLUGINPATH_NAME", "")
         
         #os.environ["HDMOONRAY_DEBUG_MODE"] = "1"
         #os.environ["HDMOONRAY_DEBUG"] = "1"
@@ -34,7 +34,7 @@ class MoonRayRenderEngine(bpy.types.HydraRenderEngine):
         #os.environ["HDMOONRAY_DISABLE"]="0"
         #os.environ["HDMOONRAY_RDLA_OUTPUT"]="temp"
 
-        pxr.Plug.Registry().RegisterPlugins([os.path.join(rel, "plugin", "pxr", "hd_moonray")])
+        pxr.Plug.Registry().RegisterPlugins([os.path.join(rel, "plugin", "pxr")])
 
 
     def get_render_settings(self, engine_type):
