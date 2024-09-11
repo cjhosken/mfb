@@ -11,10 +11,10 @@
 
 get_filename_component(PXR_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
 
-set(PXR_MAJOR_VERSION "0")
-set(PXR_MINOR_VERSION "24")
-set(PXR_PATCH_VERSION "05")
-set(PXR_VERSION "2405")
+#set(PXR_MAJOR_VERSION "0")
+#set(PXR_MINOR_VERSION "24")
+#set(PXR_PATCH_VERSION "05")
+#set(PXR_VERSION "2405")
 
 
 # Set the root directory for USD
@@ -55,7 +55,7 @@ include_directories(${Python_INCLUDE_DIRS})
 link_libraries(${Python_LIBRARIES})
 
 # Find and configure Boost
-find_package(Boost 1.82 REQUIRED COMPONENTS python311 iostreams regex system date_time chrono)
+find_package(Boost REQUIRED COMPONENTS python311 iostreams regex system date_time chrono)
 
 if (Boost_FOUND)
     # Set to use static Boost libraries
