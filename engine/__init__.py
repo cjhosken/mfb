@@ -28,11 +28,11 @@ class MoonRayRenderEngine(bpy.types.HydraRenderEngine):
         
         os.environ["PXR_PLUGINPATH_NAME"] = os.path.join(rel, "plugin", "usd") + ":" + os.environ.get("PXR_PLUGINPATH_NAME", "")
         
-        os.environ["HDMOONRAY_DEBUG_MODE"] = "1"
-        os.environ["HDMOONRAY_DEBUG"] = "1"
-        os.environ["HDMOONRAY_INFO"] = "1"
-        os.environ["HDMOONRAY_DISABLE"]="0"
-        os.environ["HDMOONRAY_RDLA_OUTPUT"]="temp"
+        #os.environ["HDMOONRAY_DEBUG_MODE"] = "1"
+        #os.environ["HDMOONRAY_DEBUG"] = "1"
+        #os.environ["HDMOONRAY_INFO"] = "1"
+        #os.environ["HDMOONRAY_DISABLE"]="0"
+        #os.environ["HDMOONRAY_RDLA_OUTPUT"]="temp"
 
         pxr.Plug.Registry().RegisterPlugins([os.path.join(rel, "plugin", "pxr")])
 
