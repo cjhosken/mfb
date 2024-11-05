@@ -5,9 +5,9 @@ class MoonRayRenderEngine(bpy.types.HydraRenderEngine):
     bl_label = "MoonRay"
     bl_info = "Dreamworks' MoonRay Production Renderer integration"
 
-    bl_use_preview = False
-    bl_use_gpu_context = False
-    bl_use_materialx = False
+    bl_use_preview = True
+    bl_use_gpu_context = True
+    bl_use_materialx = True
 
     bl_delegate_id = "HdMoonrayRendererPlugin"
 
@@ -28,11 +28,11 @@ class MoonRayRenderEngine(bpy.types.HydraRenderEngine):
         
         os.environ["PXR_PLUGINPATH_NAME"] = os.path.join(rel, "plugin", "usd") + ":" + os.environ.get("PXR_PLUGINPATH_NAME", "")
         
-        #os.environ["HDMOONRAY_DEBUG_MODE"] = "1"
-        #os.environ["HDMOONRAY_DEBUG"] = "1"
-        #os.environ["HDMOONRAY_INFO"] = "1"
-        #os.environ["HDMOONRAY_DISABLE"]="0"
-        #os.environ["HDMOONRAY_RDLA_OUTPUT"]="temp"
+        os.environ["HDMOONRAY_DEBUG_MODE"] = "1"
+        os.environ["HDMOONRAY_DEBUG"] = "1"
+        os.environ["HDMOONRAY_INFO"] = "1"
+        os.environ["HDMOONRAY_DISABLE"]="0"
+        os.environ["HDMOONRAY_RDLA_OUTPUT"]="temp"
 
         pxr.Plug.Registry().RegisterPlugins([os.path.join(rel, "plugin", "pxr")])
 
@@ -40,12 +40,9 @@ class MoonRayRenderEngine(bpy.types.HydraRenderEngine):
     def get_render_settings(self, engine_type):
         settings = bpy.context.scene.moonray
 
-        result = {}
-
-        if engine_type != "VIEWPORT":
-            result |= {
-                'aovToken:Combined': "color",
-                'aovToken:Depth': "depth",
+        result = {
+            'aovToken:Combined': "color",
+            'aovToken:Depth': "depth"
             }
 
         return result
