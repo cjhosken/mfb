@@ -50,24 +50,26 @@ class MoonRayRenderEngine(bpy.types.HydraRenderEngine):
 
             "sceneVariable:frame": 0.0,
 
-            "sceneVariable:dicing_camera": "/freeCamera/camera",
+            "sceneVariable:dicing_camera": None,
 
-            "sceneVariable:exr_header_attributes": 0.0,
+            "sceneVariable:exr_header_attributes": None,
             "sceneVariable:res": 0.0,
-            "sceneVariable:aperture_window": 0.0,
-            "sceneVariable:region_window": 0.0,
-            "sceneVariable:sub_viewport": 0.0,
+            "sceneVariable:aperture_window": (0, 10),
+            "sceneVariable:region_window": (0, 10),
+            "sceneVariable:sub_viewport": (0, 10),
 
             "sceneVariable:fps": 0.0,
             "sceneVariable:scene_scale": 1.0,
-            "sceneVariable:sampling_mode": 0.0,
-            "sceneVariable:min_adaptive_samples": 0.0,
-            "sceneVariable:max_adaptive_samples": 0.0,
+            "sceneVariable:sampling_mode": 0,
+            "sceneVariable:min_adaptive_samples": 0,
+            "sceneVariable:max_adaptive_samples": 2,
 
             "sceneVariable:target_adaptive_error": 0.0,
 
-            "sceneVariable:light_sampling_mode": 0.0,
+            "sceneVariable:light_sampling_mode": 1,
             "sceneVariable:light_sampling_quality": 0.0,
+
+            "sceneVariable:russian_roulette_threshold": 0.0,
 
 
             "sceneVariable:pixel_samples": 1,
@@ -118,11 +120,11 @@ class MoonRayRenderEngine(bpy.types.HydraRenderEngine):
 
             "sceneVariable:deep_vol_compression_res": 1,
 
-            "sceneVariable:deep_id_attribute_name": 1,
+            "sceneVariable:deep_id_attribute_names": [],
 
             "sceneVariable:texture_cache_size": 1,
 
-            "sceneVariable:crypto_uv_attribute_name": 1,
+            "sceneVariable:crypto_uv_attribute_name": "cryptouv",
             "sceneVariable:texture_file_handles": 1,
 
             "sceneVariable:fast_geometry_update": 1,
@@ -137,17 +139,17 @@ class MoonRayRenderEngine(bpy.types.HydraRenderEngine):
 
             "sceneVariable:max_depth": 1, 
 
-            "sceneVariable:checkpoint_mode": 1,
+            "sceneVariable:checkpoint_mode": 0,
             "sceneVariable:checkpoint_start_sample": 1,
             "sceneVariable:checkpoint_bg_write": 1,
-            "sceneVariable:checkpoint_post_script": 1,
+            "sceneVariable:checkpoint_post_script": "",
             "sceneVariable:checkpoint_total_files": 1,
             "sceneVariable:checkpoint_max_bgcache": 1,
             "sceneVariable:checkpoint_max_snapshot_overhead": 1,
             "sceneVariable:checkpoint_snapshot_interval": 1,
-            "sceneVariable:resumable_output": 1,
-            "sceneVariable:resume_render": 1,
-            "sceneVariable:on_resume_script": 1,
+            "sceneVariable:resumable_output": 0,
+            "sceneVariable:resume_render": 0,
+            "sceneVariable:on_resume_script": "",
             "sceneVariable:enable_dof": 1,
             "sceneVariable:enable_max_geometry_resolution": 1,
             "sceneVariable:max_geometry_resolution": 1,
@@ -164,18 +166,18 @@ class MoonRayRenderEngine(bpy.types.HydraRenderEngine):
             "sceneVariable:batch_tile_order": 1,
             "sceneVariable:progressive_tile_order": 1,
             "sceneVariable:checkpoint_tile_order": 1,
-            "sceneVariable:output_file": 1,
-            "sceneVariable:tmp_dir": 1,
+            "sceneVariable:output_file": "",
+            "sceneVariable:tmp_dir": "",
             "sceneVariable:two_stage_output": 1,
             "sceneVariable:log_debug": 1,
             "sceneVariable:log_info": 1,
-            "sceneVariable:fatal_color": 1,
-            "sceneVariable:stats_file": 1,
+            "sceneVariable:fatal_color": (255, 0, 0),
+            "sceneVariable:stats_file": "",
             "sceneVariable:athena_debug": 1,
-            "sceneVariable:debug_pixel": 1,
-            "sceneVariable:debug_rays_file": 1,
-            "sceneVariable:debug_rays_primary_range": 1,
-            "sceneVariable:debug_rays_depth_range": 1,
+            "sceneVariable:debug_pixel": (0, 0),
+            "sceneVariable:debug_rays_file": "",
+            "sceneVariable:debug_rays_primary_range": (0, 100),
+            "sceneVariable:debug_rays_depth_range": (0, 100),
             "sceneVariable:debug_console": 1,
             "sceneVariable:validate_geometry": 1,
             "sceneVariable:cryptomatte_multi_presence": 1
