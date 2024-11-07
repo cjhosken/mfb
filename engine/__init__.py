@@ -44,143 +44,162 @@ class MoonRayRenderEngine(bpy.types.HydraRenderEngine):
             'volumeRaymarchingStepSize': 2.0,
             'volumeRaymarchingStepSizeLighting': 3.0,
 
+            "houdini:interactive": False,
+
 
             "sceneVariable:min_frame": 0.0,
-            "sceneVariable:max_frame": 1.0,
+            "sceneVariable:max_frame": 0.0,
 
             "sceneVariable:frame": 0.0,
 
             "sceneVariable:dicing_camera": None,
+            "sceneVariable_dicing_camera": None,
 
-            "sceneVariable:exr_header_attributes": None,
-            "sceneVariable:res": 0.0,
-            "sceneVariable:aperture_window": (0, 10),
-            "sceneVariable:region_window": (0, 10),
-            "sceneVariable:sub_viewport": (0, 10),
+            "sceneVariable:exr_header_attributes": None, # {"name", "type". "value"}
+            "sceneVariable_exr_header_attributes": None, # {"name", "type". "value"}
+            "sceneVariable:res": 1.0,
 
-            "sceneVariable:fps": 0.0,
-            "sceneVariable:scene_scale": 1.0,
-            "sceneVariable:sampling_mode": 0,
-            "sceneVariable:min_adaptive_samples": 0,
-            "sceneVariable:max_adaptive_samples": 2,
+            "sceneVariable:aperture_window": {0, 0, 1280, 720},
+            "sceneVariable_aperture_window": {0, 0, 1280, 720},
 
-            "sceneVariable:target_adaptive_error": 0.0,
+            "sceneVariable:region_window": {},
+            "sceneVariable_region_window": {},
 
-            "sceneVariable:light_sampling_mode": 1,
-            "sceneVariable:light_sampling_quality": 0.0,
+            "sceneVariable:sub_viewport": {0, 0},
+            "sceneVariable_sub_viewport": {0, 0},
 
-            "sceneVariable:russian_roulette_threshold": 0.0,
+            "sceneVariable:fps": 24.0,
+            "sceneVariable:scene_scale": 0.01,
+            "sceneVariable:sampling_mode": 0, # (0:uniform (default), 2:adaptive)
+            "sceneVariable:min_adaptive_samples": 16,
+            "sceneVariable:max_adaptive_samples": 4096,
+
+            "sceneVariable:target_adaptive_error": 10.0,
+
+            "sceneVariable:light_sampling_mode": 0, # (0:uniform (default), 1:adaptive)
+            "sceneVariable:light_sampling_quality": 0.5,
+
+            "sceneVariable:russian_roulette_threshold": 0.0375,
 
 
-            "sceneVariable:pixel_samples": 1,
-            "sceneVariable:light_samples": 1,
-            "sceneVariable:bsdf_samples": 1,
-            "sceneVariable:bssrdf_samples": 1,
+            "sceneVariable:pixel_samples": 8,
+            "sceneVariable:light_samples": 2,
+            "sceneVariable:bsdf_samples": 2,
+            "sceneVariable:bssrdf_samples": 2,
 
-            "sceneVariable:max_depth": 1,
-            "sceneVariable:max_diffuse_depth": 1,
-            "sceneVariable:max_glossy_depth": 1,
-            "sceneVariable:max_mirror_depth": 1,
+            "sceneVariable:max_depth": 5,
+            "sceneVariable:max_diffuse_depth": 2,
+            "sceneVariable:max_glossy_depth": 2,
+            "sceneVariable:max_mirror_depth": 3,
             "sceneVariable:max_volume_depth": 1,
-            "sceneVariable:max_presence_depth": 1,
-            "sceneVariable:max_hair_depth": 1,
+            "sceneVariable:max_presence_depth": 16,
+            "sceneVariable:max_hair_depth": 5,
 
-            "sceneVariable:disable_optimized_hair_sampling": 1,
+            "sceneVariable:disable_optimized_hair_sampling": False,
             "sceneVariable:max_subsurface_per_path": 1,
-            "sceneVariable:transparency_threshold": 1,
-            "sceneVariable:presence_threshold": 1,
-            "sceneVariable:lock_frame_noise": 1,
-            "sceneVariable:volume_quality": 1,
-            "sceneVariable:volume_shadow_quality": 1,
+            "sceneVariable:transparency_threshold": 1.0,
+            "sceneVariable:presence_threshold": 0.999,
+            "sceneVariable:lock_frame_noise": False,
+            "sceneVariable:volume_quality": 0.5,
+            "sceneVariable:volume_shadow_quality": 1.0,
 
-            "sceneVariable:volume_illumination_samples": 1,
+            "sceneVariable:volume_illumination_samples": 4,
 
-            "sceneVariable:volume_opacity_threshold": 1,
-            "sceneVariable:volume_overlap_mode": 1,
-            "sceneVariable:volume_attenuation_factor": 1,
+            "sceneVariable:volume_opacity_threshold": 0.995,
+            "sceneVariable:volume_overlap_mode": 0, # (0:sum (default), 1: max, 2: rnd)
+            "sceneVariable:volume_attenuation_factor": 0.65,
 
-            "sceneVariable:volume_contribution_factor": 1,
-            "sceneVariable:volume_phase_attenuation_factor": 1,
+            "sceneVariable:volume_contribution_factor": 0.65,
+            "sceneVariable:volume_phase_attenuation_factor": 0.5,
 
-            "sceneVariable:path_guide_enable": 1,
+            "sceneVariable:path_guide_enable": False,
 
-            "sceneVariable:sample_clamping_value": 1,
+            "sceneVariable:sample_clamping_value": 10.0,
             "sceneVariable:sample_clamping_depth": 1,
 
-            "sceneVariable:roughness_clamping_factor": 1,
-            "sceneVariable:texture_blur": 1,
+            "sceneVariable:roughness_clamping_factor": 0.0,
+            "sceneVariable:texture_blur": 0.0,
 
-            "sceneVariable:pixel_filter_width": 1,
-            "sceneVariable:pixel_filter": 1,
+            "sceneVariable:pixel_filter_width": 3.0,
+            "sceneVariable:pixel_filter": 1, # (0: box, 1: cubic b-spline (default), 2: quadratic b-spline)
 
-            "sceneVariable:deep_format": 1,
-            "sceneVariable:deep_curvature_tolerance": 1,
+            "sceneVariable:deep_format": 1, # (0: openexr2.0, 1: opencx2.0 (default))
+            "sceneVariable:deep_curvature_tolerance": 45.0,
 
-            "sceneVariable:deep_z_tolerance": 1,
+            "sceneVariable:deep_z_tolerance": 2.0,
 
-            "sceneVariable:deep_vol_compression_res": 1,
+            "sceneVariable:deep_vol_compression_res": 10,
 
-            "sceneVariable:deep_id_attribute_names": [],
+            "sceneVariable:deep_id_attribute_names": {},
+            "sceneVariable_deep_id_attribute_names": {},
 
-            "sceneVariable:texture_cache_size": 1,
+            "sceneVariable:texture_cache_size": 4000,
 
-            "sceneVariable:crypto_uv_attribute_name": "cryptouv",
-            "sceneVariable:texture_file_handles": 1,
+            "sceneVariable:crypto_uv_attribute_name": "",
+            "sceneVariable:texture_file_handles": 24000,
 
-            "sceneVariable:fast_geometry_update": 1,
-            "sceneVariable:checkpoint_active": 0,
-            "sceneVariable:checkpoint_interval": 100,
-            "sceneVariable:checkpoint_quality_steps": 1,
-            "sceneVariable:checkpoint_time_cap": 1,
-            "sceneVariable:checkpoint_sample_cap": 1,
-
-            "sceneVariable:checkpoint_overwrite": 1,
-            "sceneVariable:checkpoint_mode": 1,           
-
-            "sceneVariable:max_depth": 1, 
-
-            "sceneVariable:checkpoint_mode": 0,
+            "sceneVariable:fast_geometry_update": False,
+            
+            "sceneVariable:checkpoint_active": False,
+            "sceneVariable:checkpoint_interval": 15.0,
+            "sceneVariable:checkpoint_quality_steps": 2,
+            "sceneVariable:checkpoint_time_cap": 0.0,
+            "sceneVariable:checkpoint_sample_cap": 0,
+            "sceneVariable:checkpoint_overwrite": True,         
+            "sceneVariable:checkpoint_mode": 0, # (0: time (default), 1: quality)
             "sceneVariable:checkpoint_start_sample": 1,
-            "sceneVariable:checkpoint_bg_write": 1,
+            "sceneVariable:checkpoint_bg_write": True,
             "sceneVariable:checkpoint_post_script": "",
-            "sceneVariable:checkpoint_total_files": 1,
-            "sceneVariable:checkpoint_max_bgcache": 1,
-            "sceneVariable:checkpoint_max_snapshot_overhead": 1,
-            "sceneVariable:checkpoint_snapshot_interval": 1,
-            "sceneVariable:resumable_output": 0,
-            "sceneVariable:resume_render": 0,
+            "sceneVariable:checkpoint_total_files": 0,
+            "sceneVariable:checkpoint_max_bgcache": 2,
+            "sceneVariable:checkpoint_max_snapshot_overhead": 0.0,
+
+            "sceneVariable:checkpoint_snapshot_interval": 0.0,
+            "sceneVariable:resumable_output": False,
+            "sceneVariable:resume_render": False,
             "sceneVariable:on_resume_script": "",
-            "sceneVariable:enable_dof": 1,
-            "sceneVariable:enable_max_geometry_resolution": 1,
-            "sceneVariable:max_geometry_resolution": 1,
-            "sceneVariable:enable_displacement": 1,
-            "sceneVariable:enable_subsurface_scattering": 1,
-            "sceneVariable:enable_shadowing": 1,
-            "sceneVariable:enable_presence_shadows": 1,
+            "sceneVariable:enable_dof": True,
+            "sceneVariable:enable_max_geometry_resolution": False,
+            "sceneVariable:max_geometry_resolution": 2147483647,
+            "sceneVariable:enable_displacement": True,
+            "sceneVariable:enable_subsurface_scattering": True,
+            "sceneVariable:enable_shadowing": True,
+            "sceneVariable:enable_presence_shadows": False,
             "sceneVariable:lights_visible_in_camera": 1,
-            "sceneVariable:propagate_visibility_bounce_type": 1,
-            "sceneVariable:shadow_terminator_fix": 1,
-            "sceneVariable:machine_id": 1,
-            "sceneVariable:num_machines": 1,
-            "sceneVariable:task_distribution_type": 1,
-            "sceneVariable:batch_tile_order": 1,
-            "sceneVariable:progressive_tile_order": 1,
-            "sceneVariable:checkpoint_tile_order": 1,
+            "sceneVariable:propagate_visibility_bounce_type": False,
+            "sceneVariable:shadow_terminator_fix": 0, # (0: off (default), 1: on, 2: on (sine compensation alternative), 3: on (GGX compensation alternative), 4: on (Cosine compensation alternative))
+            "sceneVariable:machine_id": -1,
+            "sceneVariable:num_machines": -1,
+            "sceneVariable:task_distribution_type": 1, # (0: non-overlapped tile, 1: multiplex pixel (default))
+            "sceneVariable:batch_tile_order": 4, # (0:top,1:bottom,2:left,3:right,4:morton(default),5:random,6:spiralsquare,7:spiralrect,8:moronshiftflip)
+            "sceneVariable:progressive_tile_order": 4, # (0:top,1:bottom,2:left,3:right,4:morton(default),5:random,6:spiralsquare,7:spiralrect,8:moronshiftflip)
+            "sceneVariable:checkpoint_tile_order": 4, # (0:top,1:bottom,2:left,3:right,4:morton(default),5:random,6:spiralsquare,7:spiralrect,8:moronshiftflip)
             "sceneVariable:output_file": "",
             "sceneVariable:tmp_dir": "",
-            "sceneVariable:two_stage_output": 1,
-            "sceneVariable:log_debug": 1,
-            "sceneVariable:log_info": 1,
-            "sceneVariable:fatal_color": (255, 0, 0),
+            "sceneVariable:two_stage_output": True,
+            "sceneVariable:log_debug": False,
+            "sceneVariable:log_info": False,
+
+            "sceneVariable:fatal_color": [1, 0, 1],
+            "sceneVariable_fatal_color": [1, 0, 1],
+
             "sceneVariable:stats_file": "",
-            "sceneVariable:athena_debug": 1,
-            "sceneVariable:debug_pixel": (0, 0),
+            "sceneVariable:athena_debug": False,
+
+            "sceneVariable:debug_pixel": {},
+            "sceneVariable_debug_pixel": {},
+
             "sceneVariable:debug_rays_file": "",
-            "sceneVariable:debug_rays_primary_range": (0, 100),
-            "sceneVariable:debug_rays_depth_range": (0, 100),
-            "sceneVariable:debug_console": 1,
-            "sceneVariable:validate_geometry": 1,
-            "sceneVariable:cryptomatte_multi_presence": 1
+            
+            "sceneVariable:debug_rays_primary_range": {},
+            "sceneVariable_debug_rays_primary_range": {},
+
+            "sceneVariable:debug_rays_depth_range": {},
+            "sceneVariable_debug_rays_depth_range": {},
+
+            "sceneVariable:debug_console": -1,
+            "sceneVariable:validate_geometry": False,
+            "sceneVariable:cryptomatte_multi_presence": False
 
 
 
