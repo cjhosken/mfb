@@ -190,7 +190,7 @@ class MoonRayRenderEngine(bpy.types.HydraRenderEngine):
             "sceneVariable_debug_pixel": {},
 
             "sceneVariable:debug_rays_file": "",
-            
+
             "sceneVariable:debug_rays_primary_range": {},
             "sceneVariable_debug_rays_primary_range": {},
 
@@ -219,7 +219,6 @@ class MoonRayRenderEngine(bpy.types.HydraRenderEngine):
         # moonray:visible_mirror_transmission
         # moonray:visible_volume
         # moonray:side_type
-
 
         return result
     
