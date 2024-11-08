@@ -101,6 +101,9 @@ set_target_properties(usdUtils PROPERTIES IMPORTED_LOCATION "${PXR_usd_ms_LIBRAR
 add_library(usdRender INTERFACE IMPORTED)
 set_target_properties(usdRender PROPERTIES IMPORTED_LOCATION "${PXR_usd_ms_LIBRARY}")
 
+add_library(hdx INTERFACE IMPORTED)
+set_target_properties(hdx PROPERTIES IMPORTED_LOCATION "${PXR_usd_ms_LIBRARY}")
+
 # Initialize PXR_LIBRARIES with the path to the monolithic library
 set(PXR_LIBRARIES "${PXR_usd_ms_LIBRARY}")
 
