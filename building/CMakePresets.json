@@ -6,28 +6,26 @@
             "hidden": true,
             "environment": {
                 "DEPS_ROOT": "${sourceParentDir}/dependencies",
-                "BUILD_DIR": "${sourceParentDir}/build",
-                "BOOST_ROOT": "$env{DEPS_ROOT}/bl_deps/boost",
-                "BOOST_LIBRARIES": "$env{DEPS_ROOT}/bl_deps/boost/lib",
-                "BOOST_INCLUDE_DIRS":"$env{DEPS_ROOT}/bl_deps/boost/include",
+                "BUILD_DIR": "$env{HOME}/.mfb/source/build",
+                "BOOST_ROOT": "$env{DEPS_ROOT}/boost",
                 "LIBUUID_ROOT": "$env{DEPS_ROOT}",
-                "CPPUNIT_ROOT": "$env{DEPS_ROOT}",
                 "ISPC": "$env{DEPS_ROOT}/bin/ispc",
                 "JSONCPP_ROOT": "$env{DEPS_ROOT}",
                 "EMBREE_ROOT": "$env{DEPS_ROOT}",
                 "LIBCURL_ROOT": "$env{DEPS_ROOT}",
                 "LOG4CPLUS_ROOT": "$env{DEPS_ROOT}",
                 "LUA_DIR": "$env{DEPS_ROOT}",
-                "OPENSUBDIV_ROOT": "$env{DEPS_ROOT}/bl_deps/opensubdiv",
-                "OPENVDB_ROOT": "$env{DEPS_ROOT}/bl_deps/openvdb",
+                "Python_ROOT": "$env{DEPS_ROOT}/python",
+                "OPENSUBDIV_ROOT": "$env{DEPS_ROOT}/opensubdiv",
+                "OPENVDB_ROOT": "$env{DEPS_ROOT}/openvdb",
                 "OPTIX_ROOT": "$env{DEPS_ROOT}",
-                "PXR_USD_LOCATION": "$env{DEPS_ROOT}/bl_deps/usd",
-                "PXR_INCLUDE_DIRS": "$env{DEPS_ROOT}/bl_deps/usd/include",
+                "PXR_USD_LOCATION": "$env{DEPS_ROOT}/usd",
+                "PXR_INCLUDE_DIRS": "$env{DEPS_ROOT}/usd/include",
                 "RANDOM123_ROOT": "$env{DEPS_ROOT}",
                 "ZLIB_ROOT": "$env{DEPS_ROOT}"
             },
             "cacheVariables": {
-                "CMAKE_PREFIX_PATH": "$env{DEPS_ROOT};$env{DEPS_ROOT}/bl_deps"            
+                "CMAKE_PREFIX_PATH": "$env{DEPS_ROOT}"            
             }
         },
         {
@@ -37,9 +35,8 @@
             "binaryDir": "$env{BUILD_DIR}",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Release",
-                "CMAKE_INSTALL_PREFIX": "${sourceParentDir}/installs/blender/linux-release",
                 "ABI_VERSION":"0",
-                "Python_EXECUTABLE":"$env{HOME}/.mfb/dependencies/bl_deps/python/bin/python3.11",
+                "Python_EXECUTABLE":"$env{HOME}/.mfb/dependencies/python/bin/python3.11",
                 "BOOST_PYTHON_COMPONENT_NAME":"python311"
             },
             "generator": "Unix Makefiles"

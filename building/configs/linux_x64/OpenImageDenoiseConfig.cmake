@@ -17,7 +17,7 @@ endif()
 set(CMAKE_IMPORT_FILE_VERSION 1)
 
 # Define the root directory for OpenImageDenoise
-set(OIDN_ROOT "$ENV{HOME}/.mfb/dependencies/bl_deps/openimagedenoise")
+set(OIDN_ROOT "$ENV{HOME}/.mfb/dependencies/openimagedenoise")
 
 # Protect against multiple inclusions
 set(_cmake_targets_defined "")

@@ -83,7 +83,7 @@ endif()
 
 # Include target definitions from ImathTargets.cmake and ImathTargets-release.cmake
 
-set(IMATH_ROOT "$ENV{HOME}/.mfb/dependencies/bl_deps/imath")
+set(IMATH_ROOT "$ENV{HOME}/.mfb/dependencies/imath")
 
 if("${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}" LESS 2.8)
    message(FATAL_ERROR "CMake >= 2.8.0 required")

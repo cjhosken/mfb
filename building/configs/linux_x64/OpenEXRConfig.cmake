@@ -108,7 +108,7 @@ cmake_policy(VERSION 2.8.3...3.24)
 # Commands may need to know the format version.
 set(CMAKE_IMPORT_FILE_VERSION 1)
 
-set(OPENEXR_ROOT "$ENV{HOME}/.mfb/dependencies/bl_deps/openexr")
+set(OPENEXR_ROOT "$ENV{HOME}/.mfb/dependencies/openexr")
 
 # Protect against multiple inclusion, which would fail when already imported targets are added once more.
 set(_cmake_targets_defined "")

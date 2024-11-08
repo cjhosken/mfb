@@ -3,7 +3,7 @@
 # opensubdivconfigversion.cmake, opensubdivtargets.cmake, and opensubdivtargets-release.cmake.
 
 # Define the root directory where OpenSubdiv is installed
-get_filename_component(PACKAGE_PREFIX_DIR "$ENV{HOME}/.mfb/dependencies/bl_deps/opensubdiv" ABSOLUTE)
+get_filename_component(PACKAGE_PREFIX_DIR "$ENV{HOME}/.mfb/dependencies/opensubdiv" ABSOLUTE)
 
 # Helper macros
 macro(set_and_check _var _file)
@@ -122,7 +122,7 @@ Targets not yet defined: ${_cmake_targets_not_defined_text}")
 endif()
 
 # Import OpenSubdiv release targets
-set(OPENSUBIV_ROOT "$ENV{HOME}/.mfb/dependencies/bl_deps/opensubdiv")
+set(OPENSUBIV_ROOT "$ENV{HOME}/.mfb/dependencies/opensubdiv")
 
 # Import targets for "Release" configuration
 set_property(TARGET OpenSubdiv::osdCPU APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)

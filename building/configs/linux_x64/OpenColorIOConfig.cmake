@@ -68,7 +68,7 @@ cmake_policy(PUSH)
 cmake_policy(VERSION 2.8.3...3.24)
 
 # Import the OpenColorIO targets
-set(OCIO_ROOT "$ENV{HOME}/.mfb/dependencies/bl_deps/opencolorio")
+set(OCIO_ROOT "$ENV{HOME}/.mfb/dependencies/opencolorio")
 
 # Protect against multiple inclusion
 set(_cmake_targets_defined "")

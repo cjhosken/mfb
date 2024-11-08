@@ -38,7 +38,7 @@ class MoonRayRenderEngine(bpy.types.HydraRenderEngine):
 
 
     def get_render_settings(self, engine_type):
-        settings = bpy.context.scene.moonray
+        moonray = bpy.context.scene.moonray
 
         result = {
             'volumeRaymarchingStepSize': 2.0,

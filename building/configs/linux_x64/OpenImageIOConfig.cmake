@@ -35,9 +35,9 @@ elseif (2.5.7 VERSION_GREATER_EQUAL 2.4 AND 1)
 endif()
 
 # Set OpenImageIO directories
-set_and_check(OpenImageIO_INCLUDE_DIR "/home/hoske/.mfb/dependencies/bl_deps/openimageio/include")
-set_and_check(OpenImageIO_INCLUDES "/home/hoske/.mfb/dependencies/bl_deps/openimageio/include")
-set_and_check(OpenImageIO_LIB_DIR "/home/hoske/.mfb/dependencies/bl_deps/openimageio/lib")
+set_and_check(OpenImageIO_INCLUDE_DIR "$ENV{HOME}/.mfb/dependencies/openimageio/include")
+set_and_check(OpenImageIO_INCLUDES "$ENV{HOME}/.mfb/dependencies/openimageio/include")
+set_and_check(OpenImageIO_LIB_DIR "$ENV{HOME}/.mfb/dependencies/openimageio/lib")
 set(OpenImageIO_PLUGIN_SEARCH_PATH "")
 
 if(NOT 1)
@@ -131,13 +131,13 @@ endforeach()
 # Define target properties
 set_target_properties(OpenImageIO::OpenImageIO_Util PROPERTIES
   INTERFACE_COMPILE_FEATURES "cxx_std_14"
-  INTERFACE_INCLUDE_DIRECTORIES "$ENV{HOME}/.mfb/dependencies/bl_deps/openimageio/include"
+  INTERFACE_INCLUDE_DIRECTORIES "$ENV{HOME}/.mfb/dependencies/openimageio/include"
   INTERFACE_LINK_LIBRARIES "\$<TARGET_NAME_IF_EXISTS:OpenEXR::Imath>;\$<TARGET_NAME_IF_EXISTS:OpenEXR::OpenEXR>;\$<TARGET_NAME_IF_EXISTS:OpenEXR::IlmThread>;\$<TARGET_NAME_IF_EXISTS:OpenEXR::Iex>;Threads::Threads"
 )
 
 set_target_properties(OpenImageIO::OpenImageIO PROPERTIES
   INTERFACE_COMPILE_FEATURES "cxx_std_14"
-  INTERFACE_INCLUDE_DIRECTORIES "$ENV{HOME}/.mfb/dependencies/bl_deps/openimageio/include"
+  INTERFACE_INCLUDE_DIRECTORIES "$ENV{HOME}/.mfb/dependencies/openimageio/include"
   INTERFACE_LINK_LIBRARIES "OpenImageIO::OpenImageIO_Util;\$<TARGET_NAME_IF_EXISTS:OpenEXR::Imath>;\$<TARGET_NAME_IF_EXISTS:OpenEXR::OpenEXR>;\$<TARGET_NAME_IF_EXISTS:OpenEXR::IlmThread>;\$<TARGET_NAME_IF_EXISTS:OpenEXR::Iex>;Threads::Threads"
 )
 
@@ -145,7 +145,7 @@ set_target_properties(OpenImageIO::OpenImageIO PROPERTIES
 
 # Import paths for release builds from oiiotargets-release.cmake
 
-set(OIIO_ROOT "$ENV{HOME}/.mfb/dependencies/bl_deps/openimageio")
+set(OIIO_ROOT "$ENV{HOME}/.mfb/dependencies/openimageio")
 
 # Release build targets
 set_target_properties(OpenImageIO::OpenImageIO_Util PROPERTIES
