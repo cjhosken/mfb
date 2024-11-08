@@ -48,20 +48,6 @@ dnf install -y bison flex wget git python3 python3-devel patch \
 
 dnf install -y lsb_release
 
-mkdir -p $HOME/.mfb/dependencies/{bin,lib,include}
-cd $HOME/.mfb/dependencies
-
-if [ $install_cgroup -eq 1 ] 
-then
-    wget https://kojihub.stream.centos.org/kojifiles/packages/libcgroup/0.42.2/5.el9/x86_64/libcgroup-0.42.2-5.el9.x86_64.rpm
-    wget https://kojihub.stream.centos.org/kojifiles/packages/libcgroup/0.42.2/5.el9/x86_64/libcgroup-devel-0.42.2-5.el9.x86_64.rpm
-    dnf install libcgroup-0.42.2-5.el9.x86_64.rpm -y
-    dnf install libcgroup-devel-0.42.2-5.el9.x86_64.rpm -y
-fi
-
-wget https://github.com/Kitware/CMake/releases/download/v3.23.1/cmake-3.23.1-linux-x86_64.tar.gz
-tar xzf cmake-3.23.1-linux-x86_64.tar.gz
-
 dnf install -y blosc blosc-devel #1.21.2
 dnf install -y boost boost-chrono boost-date-time boost-filesystem boost-python3 boost-program-options boost-regex boost-thread boost-system boost-devel #1.75.0
 dnf install -y lua lua-libs lua-devel #5.4.4
@@ -77,5 +63,5 @@ then
     dnf install -y qt5-qtbase-devel qt5-qtscript-devel
 fi
 
-export PATH=$HOME/.mfb/dependencies/cmake-3.23.1-linux-x86_64/bin:/usr/local/cuda/bin:${PATH}
+export PATH=/usr/local/cuda/bin:${PATH}
 export LD_LIBRARY_PATH=/usr/local/cuda/lib64:${LD_LIBRARY_PATH}

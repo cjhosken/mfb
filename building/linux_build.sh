@@ -32,27 +32,14 @@ cd "$MFB_DIR"
 
 git clone --recurse-submodules https://github.com/dreamworksanimation/openmoonray.git $MFB_DIR/source
 
-rm -rf $MFB_DIR/source/building/RHEL9
-cp -r $SCRIPT_DIR/RHEL9 $MFB_DIR/source/building/RHEL9
+rm -rf $MFB_DIR/source/building/linux_x64
+cp -r $SCRIPT_DIR/linux_x64 $MFB_DIR/source/building/linux_x64
 
-sudo -s source $MFB_DIR/source/building/RHEL9/install_packages.sh
-
-rm -rf $MFB_DIR/build
-mkdir $MFB_DIR/build
-cd $MFB_DIR/build
-
-cmake $MFB_DIR/source/building/RHEL9 -DInstallRoot="$MFB_DIR/dependencies"
-cmake --build $MFB_DIR/build -j $(nproc)
-
-rm -rf $MFB_DIR/build/*
+git init $MFB_DIR/dependencies
 cd $MFB_DIR/dependencies
 
-cp $SCRIPT_DIR/optix.sh $MFB_DIR/dependencies/optix.sh
-chmod +x $MFB_DIR/dependencies/optix.sh
-bash $MFB_DIR/dependencies/optix.sh --skip-license --exclude-subdir
-
-
-cp $SCRIPT_DIR/CMakePresets.json $MFB_DIR/source/CMakePresets.json
+git remote add -f origin https://projects.blender.org/blender/lib-linux_x64.git
+git config core.sparseCheckout true
 
 echo -e "boost\nimath\nmaterialx\nopencolorio\nopenexr\nopenimagedenoise\nopenimageio\nopensubdiv\nopenvdb\npython\nusd" > .git/info/sparse-checkout
 
@@ -60,28 +47,37 @@ git fetch origin
 
 git checkout 483736b00b6a767342e30f5bd95eebcc3c6a4219
 
-cd $BTOA_DIR
+mkdir -p $MFB_DIR/dependencies/bin
+#sudo -s source $MFB_DIR/source/building/linux_x64/install_packages.sh
 
+mkdir -p $MFB_DIR/source/build
+cd $MFB_DIR/source/build
+
+#cmake $MFB_DIR/source/building/linux_x64 -DInstallRoot="$MFB_DIR/dependencies"
+#cmake --build . -j $(nproc)
+
+rm -rf *
+
+cp $SCRIPT_DIR/CMakePresets.json $MFB_DIR/source/CMakePresets.json
 cp -r $SCRIPT_DIR/configs/linux_x64/* $MFB_DIR/dependencies
+
+chmod +x $MFB_DIR/dependencies/optix.sh
+bash $MFB_DIR/dependencies/optix.sh --skip-license --exclude-subdir
 
 export PATH=/usr/local/cuda/bin:$PATH
 LD_LIBRARY_PATH=/usr/local/cuda/lib64:$BTOA_DIR/dependencies/boost/lib:$BTOA_DIR/dependencies/materialx/lib:$BTOA_DIR/dependencies/imath/lib:$BTOA_DIR/dependencies/openvdb/lib:$BTOA_DIR/dependencies/opensubdiv/lib:$BTOA_DIR/dependencies/openimageio/lib:$LD_LIBRARY_PATH
 
-
 unset PYTHONPATH
 unset PYTHONHOME
 
-cmake $MFB_DIR/source --preset linux-blender-release
-cmake --build $MFB_DIR/build -j $(nproc)
+cmake .. --preset linux-blender-release -Wno-dev
+cmake --build . -j $(nproc)
 
-rm -rf $MFB_DIR/installs
-mkdir $MFB_DIR/installs
-mkdir $MFB_DIR/installs/openmoonray
-cmake --install $MFB_DIR/build --prefix $MFB_DIR/installs/openmoonray
+cmake --install . --prefix $MFB_DIR/openmoonray
 
-source $MFB_DIR/installs/openmoonray/scripts/setup.sh
+source $MFB_DIR/openmoonray/scripts/setup.sh
 
-SOURCE_LINE="export MFB_DIR=$HOME/.mfb; source $MFB_DIR/installs/openmoonray/scripts/setup.sh; export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$MFB_DIR/dependencies/bl_deps/python/lib:$MFB_DIR/dependencies/bl_deps/boost/lib:$MFB_DIR/dependencies/bl_deps/materialx/lib:$MFB_DIR/dependencies/bl_deps/opensubdiv/lib:$MFB_DIR/dependencies/bl_deps/openimageio/lib:$MFB_DIR/dependencies/bl_deps/openvdb/lib:$MFB_DIR/dependencies/bl_deps/openexr/lib:$MFB_DIR/dependencies/bl_deps/imath/lib:$LD_LIBRARY_PATH;"
+SOURCE_LINE="export MFB_DIR=$HOME/.mfb; source $MFB_DIR/openmoonray/scripts/setup.sh; export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$MFB_DIR/dependencies/bl_deps/python/lib:$MFB_DIR/dependencies/bl_deps/boost/lib:$MFB_DIR/dependencies/bl_deps/materialx/lib:$MFB_DIR/dependencies/bl_deps/opensubdiv/lib:$MFB_DIR/dependencies/bl_deps/openimageio/lib:$MFB_DIR/dependencies/bl_deps/openvdb/lib:$MFB_DIR/dependencies/bl_deps/openexr/lib:$MFB_DIR/dependencies/bl_deps/imath/lib:$LD_LIBRARY_PATH;"
 
 # The .bashrc file path
 BASHRC_PATH="$HOME/.bashrc"
@@ -98,6 +94,4 @@ else
     echo "The line has been added to .bashrc."
 fi
 
-cd $SCRIPT_DIR
-
-kill $!
+echo "MoonRay has been built at $MFB_DIR"
