@@ -32,7 +32,6 @@ cd "$MFB_DIR"
 
 git clone --recurse-submodules https://github.com/dreamworksanimation/openmoonray.git $MFB_DIR/source
 
-rm -rf $MFB_DIR/source/building/linux_x64
 cp -r $SCRIPT_DIR/linux_x64 $MFB_DIR/source/building/linux_x64
 
 git init $MFB_DIR/dependencies
@@ -48,13 +47,13 @@ git fetch origin
 git checkout 483736b00b6a767342e30f5bd95eebcc3c6a4219
 
 mkdir -p $MFB_DIR/dependencies/bin
-#sudo -s source $MFB_DIR/source/building/linux_x64/install_packages.sh
+sudo -s source $MFB_DIR/source/building/linux_x64/install_packages.sh
 
 mkdir -p $MFB_DIR/source/build
 cd $MFB_DIR/source/build
 
-#cmake $MFB_DIR/source/building/linux_x64 -DInstallRoot="$MFB_DIR/dependencies"
-#cmake --build . -j $(nproc)
+cmake $MFB_DIR/source/building/linux_x64 -DInstallRoot="$MFB_DIR/dependencies"
+cmake --build . -j $(nproc)
 
 rm -rf *
 
