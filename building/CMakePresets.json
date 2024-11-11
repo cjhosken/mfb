@@ -40,6 +40,46 @@
                 "BOOST_PYTHON_COMPONENT_NAME":"python311"
             },
             "generator": "Unix Makefiles"
+        },
+        {
+            "name": "windows-blender-environment",
+            "hidden": true,
+            "environment": {
+                "DEPS_ROOT": "${sourceParentDir}/dependencies",
+                "BUILD_DIR": "${sourceParentDir}/source/build",
+                "BOOST_ROOT": "$env{DEPS_ROOT}/boost",
+                "Python_ROOT": "$env{DEPS_ROOT}/python/311",
+                "Python_EXECUTABLE":"$env{DEPS_ROOT}/python/311/bin/python.exe",
+                "Python_LIBRARIES":"$env{DEPS_ROOT}/python/311/libs/python311.lib",
+                "Python_INCLUDE_DIRS":"$env{DEPS_ROOT}/python/311/include",
+                "OPENSUBDIV_ROOT": "$env{DEPS_ROOT}/opensubdiv",
+                "OPENVDB_ROOT": "$env{DEPS_ROOT}/openvdb",
+                "PXR_USD_LOCATION": "$env{DEPS_ROOT}/usd",
+                "PXR_INCLUDE_DIRS": "$env{DEPS_ROOT}/usd/include",
+                "TBB_ROOT": "$env{DEPS_ROOT}/tbb",
+                "OPTIX_ROOT": "$env{DEPS_ROOT}",
+                "EMBREE_ROOT": "$env{DEPS_ROOT}"
+            },
+            "cacheVariables": {
+                "CMAKE_PREFIX_PATH": "$env{DEPS_ROOT}",   
+                "ISPC": "$env{DEPS_ROOT}/bin/ispc.exe"    
+            }
+        },
+        {
+            "name": "windows-blender-release",
+            "displayName": "Blender Windows Release",
+            "inherits": "windows-blender-environment",
+            "binaryDir": "$env{BUILD_DIR}",
+            "cacheVariables": {
+                "CMAKE_TOOLCHAIN_FILE":"$env{USERPROFILE}/vcpkg/scripts/buildsystems/vcpkg.cmake",
+                "CMAKE_BUILD_TYPE": "Release",
+                "ABI_VERSION":"0",
+                "BOOST_PYTHON_COMPONENT_NAME":"python311",
+                "Boost_USE_STATIC_LIBS":"OFF",
+                "ISPC_EXECUTABLE":"C:/path/to/ispc/ispc.exe",
+                "BUILD_QT_APPS":"NO",
+                "MOONRAY_USE_OPTIX":"NO"
+            }
         }
     ],
     "buildPresets": [
@@ -47,6 +87,13 @@
             "name": "linux-blender-release",
             "displayName": "Blender Linux Release",
             "configurePreset": "linux-blender-release",
+            "configuration": "Release",
+            "targets": ["install"]
+        },
+        {
+            "name": "windows-blender-release",
+            "displayName": "Blender Windows Release",
+            "configurePreset": "windows-blender-release",
             "configuration": "Release",
             "targets": ["install"]
         }

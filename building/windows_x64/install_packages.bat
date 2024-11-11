@@ -1,52 +1,47 @@
-# Set directory for installation
-$InstallDir = 'C:\ProgramData\chocoportable'
-$env:ChocolateyInstall = $InstallDir
+@echo off
+setlocal
 
-# Check if Chocolatey is already installed
-if (Test-Path $env:ChocolateyInstall) {
-    Write-Host "Chocolatey is already installed at $env:ChocolateyInstall"
-} else {
-    # If your PowerShell Execution policy is restrictive, set session to Bypass
-    Set-ExecutionPolicy Bypass -Scope Process -Force
-    
-    # Install Chocolatey
-    Write-Host "Installing Chocolatey..."
-    iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-}
+REM Set the installation directory for vcpkg
+set VCPKG_DIR=%USERPROFILE%\vcpkg
 
-# Add Chocolatey to PATH
-$env:PATH += ";$env:ChocolateyInstall\bin"
+REM Check if Git is installed
+where git >nul 2>&1
+if %errorlevel% neq 0 (
+    echo "Git is not installed. Please install Git and try again."
+    exit /b 1
+)
 
-# Verify Chocolatey installation
-if (Get-Command choco -ErrorAction SilentlyContinue) {
-    Write-Host "Chocolatey is installed and accessible."
-} else {
-    Write-Error "Chocolatey installation failed or is not accessible."
-}
+REM Clone vcpkg repository if it doesn't exist
+if not exist "%VCPKG_DIR%" (
+    echo "Cloning vcpkg repository..."
+    git clone https://github.com/microsoft/vcpkg.git %VCPKG_DIR%
+    if %errorlevel% neq 0 (
+        echo "Failed to clone vcpkg repository."
+        exit /b 1
+    )
+) else (
+    echo "vcpkg directory already exists. Skipping clone."
+)
 
-choco feature enable -n=allowGlobalConfirmation
-# Install make using Chocolatey
-Write-Host "Installing make..."
-choco install make -y
+REM Bootstrap vcpkg
+echo "Bootstrapping vcpkg..."
+cd %VCPKG_DIR%
+call .\bootstrap-vcpkg.bat
+if %errorlevel% neq 0 (
+    echo "Failed to bootstrap vcpkg."
+    exit /b 1
+)
 
-# Verify make installation
-if (Get-Command make -ErrorAction SilentlyContinue) {
-    Write-Host "Make has been installed successfully."
-    
-    # Add make to PATH
-    $makePath = (Get-Command make).Source
-    $makeDir = [System.IO.Path]::GetDirectoryName($makePath)
-    
-    if ($env:PATH -notlike "*$makeDir*") {
-        Write-Host "Adding make directory to PATH..."
-        [System.Environment]::SetEnvironmentVariable('PATH', "$env:PATH;$makeDir", [System.EnvironmentVariableTarget]::Machine)
-    } else {
-        Write-Host "Make directory is already in PATH."
-    }
-} else {
-    Write-Error "Make installation failed or is not accessible."
-}
+REM Add vcpkg to PATH for the current session
+set PATH=%PATH%;%VCPKG_DIR%
 
-# Wait for the user to hit Enter before exiting
-Write-Host "Press Enter to exit..."
-[void][System.Console]::ReadLine()
+echo "vcpkg installation complete."
+echo "You can now use vcpkg by running '%VCPKG_DIR%\vcpkg'."
+endlocal
+
+%VCPKG_DIR%\vcpkg install curl[openssl]:x64-windows
+%VCPKG_DIR%\vcpkg install cppunit:x64-windows
+%VCPKG_DIR%\vcpkg install jsoncpp:x64-windows
+%VCPKG_DIR%\vcpkg install libjpeg-turbo:x64-windows
+%VCPKG_DIR%\vcpkg install libdeflate:x64-windows
+%VCPKG_DIR%\vcpkg install qt5:x64-windows

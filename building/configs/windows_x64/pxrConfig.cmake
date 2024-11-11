@@ -44,10 +44,10 @@ message(STATUS "PXR_LIBRARIES: ${PXR_LIBRARIES}")
 include_directories(${PXR_INCLUDE_DIRS})
 link_libraries(${PXR_LIBRARIES})
 
-set(BL_PYTHON_ROOT "$ENV{HOME}/.mfb/dependencies/bl_deps/python")
+set(BL_PYTHON_ROOT "$ENV{USERPROFILE}/.mfb/dependencies/python/311")
 
-set(Python_INCLUDE_DIRS "${BL_PYTHON_ROOT}/include/python3.11")
-set(Python_LIBRARIES "${BL_PYTHON_ROOT}/lib/libpython3.11.a")
+set(Python_INCLUDE_DIRS "${BL_PYTHON_ROOT}/include")
+set(Python_LIBRARIES "${BL_PYTHON_ROOT}/libs/python311.lib")
 
 message(STATUS "Python_INCLUDE_DIRS:" ${Python_INCLUDE_DIRS})
 message(STATUS "Python_LIBRARIES:" ${Python_LIBRARIES})
@@ -63,8 +63,8 @@ if (Boost_FOUND)
     set(Boost_USE_MULTITHREADED ON)
     set(Boost_USE_STATIC_RUNTIME OFF)
 
-    set(Boost_LIBRARIES "$ENV{HOME}/.mfb/dependencies/bl_deps/boost/lib")
-    set(Boost_INCLUDE_DIRS "$ENV{HOME}/.mfb/dependencies/bl_deps/boost/include")
+    set(Boost_LIBRARIES "$ENV{USERPROFILE}/.mfb/dependencies/boost/lib")
+    set(Boost_INCLUDE_DIRS "$ENV{USERPROFILE}/.mfb/dependencies/boost/include")
 
     message(STATUS "Boost_INCLUDE_DIRS: ${Boost_INCLUDE_DIRS}")
     message(STATUS "Boost_LIBRARIES: ${Boost_LIBRARIES}")
