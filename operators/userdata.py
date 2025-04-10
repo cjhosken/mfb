@@ -1,7 +1,7 @@
 import bpy
 from bpy.props import *
 
-from ..mfb.userdata import MoonRayUserData
+from ..props.userdata import MoonRayUserData
 
 class MOONRAY_OT_AddUserData(bpy.types.Operator):
     bl_idname = "moonray.add_userdata"

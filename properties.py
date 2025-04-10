@@ -1,8 +1,8 @@
 import bpy
 from bpy.props import *
 
-from .mfb.sets import MoonRayLightSets, MoonRayLightFilterSets, MoonRayShadowSets, MoonRayShadowReceiverSets, MoonRayTraceSets
-from .mfb.attributes import (
+from .props.sets import MoonRayLightSets, MoonRayLightFilterSets, MoonRayShadowSets, MoonRayShadowReceiverSets, MoonRayTraceSets
+from .props.attributes import (
     MoonRayAttributes_Caching, 
     MoonRayAttributes_CameraAndLayer, 
     MoonRayAttributes_Checkpoint, 
@@ -24,10 +24,10 @@ from .mfb.attributes import (
     MoonRayAttributes_General
 )
 
-from .mfb.render_output import MoonRayAttributes_RenderOutput
-from .mfb import MoonRayAttributes_Mfb
+from .props.render_output import MoonRayAttributes_RenderOutput
+from .props import MoonRayAttributes_Mfb
 
-from .mfb.userdata import MoonRayUserData
+from .props.userdata import MoonRayUserData
 
 class MoonRaySceneProperties(bpy.types.PropertyGroup):
 
