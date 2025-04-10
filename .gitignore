@@ -151,4 +151,4 @@ cython_debug/
 
 
 ./install
-/mfb
+mfb/
