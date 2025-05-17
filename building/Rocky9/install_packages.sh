@@ -48,8 +48,16 @@ dnf install -y bison flex wget git python3 python3-devel patch \
 
 dnf install -y lsb_release
 
-mkdir -p ./deps/{bin,lib,include}
-cd ./deps
+mkdir -p /installs/{bin,lib,include}
+cd /installs
+
+if [ $install_cgroup -eq 1 ] 
+then
+    wget https://kojihub.stream.centos.org/kojifiles/packages/libcgroup/0.42.2/5.el9/x86_64/libcgroup-0.42.2-5.el9.x86_64.rpm
+    wget https://kojihub.stream.centos.org/kojifiles/packages/libcgroup/0.42.2/5.el9/x86_64/libcgroup-devel-0.42.2-5.el9.x86_64.rpm
+    dnf install libcgroup-0.42.2-5.el9.x86_64.rpm -y
+    dnf install libcgroup-devel-0.42.2-5.el9.x86_64.rpm -y
+fi
 
 wget https://github.com/Kitware/CMake/releases/download/v3.23.1/cmake-3.23.1-linux-x86_64.tar.gz
 tar xzf cmake-3.23.1-linux-x86_64.tar.gz
