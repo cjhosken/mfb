@@ -1,16 +1,15 @@
 DIR=$(dirname "$(realpath "$0")")
 
-mkdir -p $DIR/build
-cd $DIR/build
-rm -rf *
+mkdir -p $HOME/.mfb/source/build
+cd $HOME/.mfb/source/build
 
-DEPS="$DIR/deps"
+DEPS="$HOME/.mfb/source/deps"
 CMAKES="$DIR/cmake"
 
-cmake ../source \
+cmake ../openmoonray \
     -DCMAKE_PREFIX_PATH=$DEPS:$CMAKES \
-    -DCMAKE_MODULES_ROOT="$DIR/cmake" \
-    -DPYTHON_EXECUTABLE="$DEPS/python/bin/python3" \
+    -DCMAKE_MODULE_PATH="$DIR/cmake" \
+    -DPYTHON_EXECUTABLE="$DEPS/python/bin/python311" \
     -DBOOST_PYTHON_COMPONENT_NAME=python311 \
     -DABI_VERSION=0 \
     -DJsonCpp_ROOT="$DEPS/jsoncpp" \
@@ -20,10 +19,16 @@ cmake ../source \
     -DOpenImageIO_ROOT=$CMAKES \
     -DPython_ROOT="$DEPS/python" \
     -Dpxr_ROOT=$CMAKES \
-    -DBoost_ROOT="$DEPS/boost" \
-    -DOpenImageDenoise_ROOT=$CMAKES \
+    -DMaterialX_DIR=$CMAKES \
+    -DOpenVDB_DIR=$CMAKES \
+    -DOpenImageDenoise_ROOT="$DEPS/openimagedenoise" \
     -DOpenSubDiv_ROOT="$DEPS/opensubdiv" \
-    -DEmbree_ROOT=$CMAKES \
-    -DRandom123_INCLUDE_DIR="$DEPS/random123/include"
+    -DOpenSubdiv_DIR="$CMAKES" \
+    -DEmbree_DIR=$CMAKES \
+    -DRandom123_INCLUDE_DIR="$DEPS/random123/include" \
+    -Dsycl_DIR=$CMAKES \
+    -DBOOST_INCLUDEDIR="$DEPS/boost/include" \
+    -DBOOST_LIBRARYDIR="$DEPS/boost/lib" \
+    -DMOONRAY_USE_OPTIX=NO
     
 cmake --build . -- -j $(nproc)
