@@ -30,14 +30,14 @@ else()
         add_library(OpenImageIO::OpenImageIO_Util UNKNOWN IMPORTED)
         set_target_properties(OpenImageIO::OpenImageIO_Util PROPERTIES
             IMPORTED_LOCATION "${OpenImageIO_UTIL_LIBRARY}"
-            INTERFACE_INCLUDE_DIRECTORIES "${OpenImageIO_INCLUDE_DIR}"
+            INTERFACE_INCLUDE_DIRECTORIES "${OpenImageIO_INCLUDE_DIR};${Imath_INCLUDE_DIR}"
             INTERFACE_LINK_LIBRARIES "OpenEXR::OpenEXR;OpenEXR::OpenEXRCore;Imath::Imath;Boost::thread;Boost::chrono;Boost::atomic"
         )
 
         add_library(OpenImageIO::OpenImageIO UNKNOWN IMPORTED)
         set_target_properties(OpenImageIO::OpenImageIO PROPERTIES
             IMPORTED_LOCATION "${OpenImageIO_LIBRARY}"
-            INTERFACE_INCLUDE_DIRECTORIES "${OpenImageIO_INCLUDE_DIR}"
+            INTERFACE_INCLUDE_DIRECTORIES "${OpenImageIO_INCLUDE_DIR};${Imath_INCLUDE_DIR}"
             INTERFACE_LINK_LIBRARIES "${OpenImageIO_UTIL_LIBRARY};OpenEXR::OpenEXR;OpenEXR::OpenEXRCore;Imath::Imath;Boost::thread;Boost::chrono;Boost::atomic"
         )
 
