@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31321.278
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "optixConsole", "optixConsole.vcxproj", "{175DC310-3361-4D66-96BB-71C0742E827E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{175DC310-3361-4D66-96BB-71C0742E827E}.Debug|x64.ActiveCfg = Debug|x64
+		{175DC310-3361-4D66-96BB-71C0742E827E}.Debug|x64.Build.0 = Debug|x64
+		{175DC310-3361-4D66-96BB-71C0742E827E}.Release|x64.ActiveCfg = Release|x64
+		{175DC310-3361-4D66-96BB-71C0742E827E}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6BC1DECF-7A0D-48B2-B2E8-4ABFCBFB6926}
+	EndGlobalSection
+EndGlobal
