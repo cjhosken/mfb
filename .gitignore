@@ -154,3 +154,9 @@ cython_debug/
 mfb/
 .vs/
 .vscode/
+
+build/
+build-deps/
+deps/
+source/
+optix/
