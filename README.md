@@ -2,6 +2,13 @@
 
 MoonRay for Blender is a render engine addon which allows users to utilise Dreamworks' MoonRay Production Renderer inside of Blender.
 
+
+<div style="color: red;">
+
+THIS ADDON IS CURRENTLY BROKEN. 
+
+</div>
+
 ## Installing
 
 To use, download the latest release of the MoonRayForBlender addon and save the zip file. 
