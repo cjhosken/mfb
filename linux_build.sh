@@ -6,9 +6,12 @@ BUILD_DIR=$SCRIPT_DIR/build
 BUILD_DEPS_DIR=$SCRIPT_DIR/build-deps
 INSTALL_DIR=$SCRIPT_DIR/openmoonray
 DEPS_DIR=$SCRIPT_DIR/deps
+MOONRAY_VERSION=1.7.0.0
 BLENDER_VERSION=4.4
 
 git clone --recurse-submodules https://github.com/dreamworksanimation/openmoonray.git $SOURCE_DIR
+cd $SOURCE_DIR
+git checkout openmoonray-$MOONRAY_VERSION
 
 cd $SCRIPT_DIR
 
