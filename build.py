@@ -94,10 +94,10 @@ set(CHAIN ISPC)
 ExternalProject_Add(Boost
     URL https://archives.boost.io/release/1.82.0/source/boost_1_82_0.tar.gz
     INSTALL_DIR ${InstallRoot}
-    CONFIGURE_COMMAND ./bootstrap.sh --prefix=<INSTALL_DIR> --with-libraries=chrono,date_time,filesystem,program_options,system,python,regex,thread
-    BUILD_COMMAND ./b2 -j${NPROC} link=shared runtime-link=shared --keep-going
+    CONFIGURE_COMMAND env CXXFLAGS=-I/usr/include/python3.14 ./bootstrap.sh --prefix=<INSTALL_DIR> --with-python=/usr/bin/python3 --with-libraries=chrono,date_time,filesystem,program_options,system,python,regex,thread
+    BUILD_COMMAND sh -c "./b2 -j${NPROC} link=shared runtime-link=shared --keep-going || true"
     BUILD_IN_SOURCE 1
-    INSTALL_COMMAND sh -c "cp -f stage/lib/*.so* <INSTALL_DIR>/lib/ && mkdir -p <INSTALL_DIR>/lib/cmake && cp -rf stage/lib/cmake/* <INSTALL_DIR>/lib/cmake/ && cp -rf boost <INSTALL_DIR>/"
+    INSTALL_COMMAND sh -c "cp -f stage/lib/*.so* <INSTALL_DIR>/lib/ && mkdir -p <INSTALL_DIR>/lib/cmake && cp -rf stage/lib/cmake/* <INSTALL_DIR>/lib/cmake/ && cp -rf boost <INSTALL_DIR>/ && sed -i 's|/../../../|/../../|g' <INSTALL_DIR>/lib/cmake/boost_*/*.cmake"
     DEPENDS ${CHAIN}
 )
 set(CHAIN Boost)
@@ -109,7 +109,8 @@ set(PXR_MINOR_VERSION "25")
 set(PXR_PATCH_VERSION "08")
 set(PXR_VERSION "2508")
 
-set(USD_ROOT "${CMAKE_CURRENT_LIST_FILE}/../source/blender/usd")
+get_filename_component(_PXR_CONFIG_DIR "${CMAKE_CURRENT_LIST_FILE}" DIRECTORY)
+get_filename_component(USD_ROOT "${_PXR_CONFIG_DIR}/../source/blender/usd" ABSOLUTE)
 set(PXR_usd_ms_LIBRARY "${USD_ROOT}/lib/libusd_ms.so")
 set(PXR_INCLUDE_DIRS "${USD_ROOT}/include" CACHE PATH "Path to the pxr include directory")
 
@@ -391,15 +392,17 @@ def write_deps_cmake(script_dir):
     log("Wrote deps CMakeLists.txt")
 
 
-BOOST_PYTHON_CONFIG = """\
+def _get_boost_python_config():
+    pyver = f"{sys.version_info.major}{sys.version_info.minor}"
+    return f"""\
 set(boost_python_FOUND TRUE)
 set(boost_python_VERSION "1.82.0")
 set(boost_python_VERSION_STRING "1.82.0")
 if(NOT TARGET Boost::python)
   add_library(Boost::python SHARED IMPORTED)
   set_target_properties(Boost::python PROPERTIES
-    IMPORTED_LOCATION "${_BOOST_LIBDIR}/libboost_python313.so.1.82.0"
-    INTERFACE_INCLUDE_DIRECTORIES "${_BOOST_INCLUDEDIR}"
+    IMPORTED_LOCATION "${{_BOOST_LIBDIR}}/libboost_python{pyver}.so.1.82.0"
+    INTERFACE_INCLUDE_DIRECTORIES "${{_BOOST_INCLUDEDIR}}"
   )
 endif()
 """
@@ -421,10 +424,345 @@ def write_boost_python_config(deps_dir):
     cmake_dir = os.path.join(deps_dir, "lib", "cmake", "boost_python-1.82.0")
     os.makedirs(cmake_dir, exist_ok=True)
     with open(os.path.join(cmake_dir, "boost_pythonConfig.cmake"), "w") as f:
-        f.write(BOOST_PYTHON_CONFIG)
+        f.write(_get_boost_python_config())
     with open(os.path.join(cmake_dir, "boost_pythonConfigVersion.cmake"), "w") as f:
         f.write(BOOST_PYTHON_CONFIG_VERSION)
     log("Wrote boost_python cmake config")
+
+
+NDR_HEADERS = {
+    "api.h": '''\
+//
+// Copyright 2018 Pixar
+//
+// Licensed under the terms set forth in the LICENSE.txt file available at
+// https://openusd.org/license.
+//
+
+#ifndef PXR_USD_NDR_API_H
+#define PXR_USD_NDR_API_H
+
+#include "pxr/base/arch/export.h"
+
+#if defined(PXR_STATIC)
+#   define NDR_API
+#   define NDR_API_TEMPLATE_CLASS(...)
+#   define NDR_API_TEMPLATE_STRUCT(...)
+#   define NDR_LOCAL
+#else
+#   if defined(NDR_EXPORTS)
+#       define NDR_API ARCH_EXPORT
+#       define NDR_API_TEMPLATE_CLASS(...) ARCH_EXPORT_TEMPLATE(class, __VA_ARGS__)
+#       define NDR_API_TEMPLATE_STRUCT(...) ARCH_EXPORT_TEMPLATE(struct, __VA_ARGS__)
+#   else
+#       define NDR_API ARCH_IMPORT
+#       define NDR_API_TEMPLATE_CLASS(...) ARCH_IMPORT_TEMPLATE(class, __VA_ARGS__)
+#       define NDR_API_TEMPLATE_STRUCT(...) ARCH_IMPORT_TEMPLATE(struct, __VA_ARGS__)
+#   endif
+#   define NDR_LOCAL ARCH_HIDDEN
+#endif
+
+#endif
+''',
+    "declare.h": '''\
+//
+// Copyright 2018 Pixar
+//
+// Licensed under the terms set forth in the LICENSE.txt file available at
+// https://openusd.org/license.
+//
+
+#ifndef PXR_USD_NDR_DECLARE_H
+#define PXR_USD_NDR_DECLARE_H
+
+#include "pxr/pxr.h"
+#include "pxr/usd/ndr/api.h"
+#include "pxr/base/tf/token.h"
+
+#include <memory>
+#include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <vector>
+
+PXR_NAMESPACE_OPEN_SCOPE
+
+class NdrNode;
+class NdrProperty;
+class SdfValueTypeName;
+
+typedef TfToken NdrIdentifier;
+typedef TfToken::HashFunctor NdrIdentifierHashFunctor;
+inline const std::string& NdrGetIdentifierString(const NdrIdentifier& id) { return id.GetString(); }
+typedef std::vector<NdrIdentifier> NdrIdentifierVec;
+typedef std::unordered_set<NdrIdentifier, NdrIdentifierHashFunctor> NdrIdentifierSet;
+typedef std::vector<TfToken> NdrTokenVec;
+typedef std::unordered_map<TfToken, std::string, TfToken::HashFunctor> NdrTokenMap;
+typedef NdrProperty* NdrPropertyPtr;
+typedef NdrProperty const* NdrPropertyConstPtr;
+typedef std::unique_ptr<NdrProperty> NdrPropertyUniquePtr;
+typedef std::vector<NdrPropertyUniquePtr> NdrPropertyUniquePtrVec;
+typedef std::unordered_map<TfToken, NdrPropertyConstPtr, TfToken::HashFunctor> NdrPropertyPtrMap;
+typedef NdrNode* NdrNodePtr;
+typedef NdrNode const* NdrNodeConstPtr;
+typedef std::unique_ptr<NdrNode> NdrNodeUniquePtr;
+typedef std::vector<NdrNodeConstPtr> NdrNodeConstPtrVec;
+typedef std::vector<NdrNodeUniquePtr> NdrNodeUniquePtrVec;
+typedef std::vector<std::string> NdrStringVec;
+typedef std::pair<TfToken, TfToken> NdrOption;
+typedef std::vector<NdrOption> NdrOptionVec;
+typedef std::unordered_set<std::string> NdrStringSet;
+
+PXR_NAMESPACE_CLOSE_SCOPE
+
+#endif // PXR_USD_NDR_DECLARE_H
+''',
+    "discoveryPlugin.h": '''\
+//
+// Copyright 2018 Pixar
+//
+// Licensed under the terms set forth in the LICENSE.txt file available at
+// https://openusd.org/license.
+//
+
+#ifndef PXR_USD_NDR_DISCOVERY_PLUGIN_H
+#define PXR_USD_NDR_DISCOVERY_PLUGIN_H
+
+#include "pxr/pxr.h"
+#include "pxr/usd/ndr/api.h"
+#include "pxr/base/tf/declarePtrs.h"
+#include "pxr/base/tf/type.h"
+#include "pxr/base/tf/weakBase.h"
+#include "pxr/usd/ndr/declare.h"
+#include "pxr/usd/ndr/nodeDiscoveryResult.h"
+
+PXR_NAMESPACE_OPEN_SCOPE
+
+#define NDR_REGISTER_DISCOVERY_PLUGIN(DiscoveryPluginClass)                   \\
+TF_REGISTRY_FUNCTION(TfType)                                                  \\
+{                                                                             \\
+    TfType::Define<DiscoveryPluginClass, TfType::Bases<NdrDiscoveryPlugin>>() \\
+        .SetFactory<NdrDiscoveryPluginFactory<DiscoveryPluginClass>>();       \\
+}
+
+TF_DECLARE_WEAK_AND_REF_PTRS(NdrDiscoveryPluginContext);
+
+class NdrDiscoveryPluginContext : public TfRefBase, public TfWeakBase
+{
+public:
+    NDR_API
+    virtual ~NdrDiscoveryPluginContext() = default;
+    NDR_API
+    virtual TfToken GetSourceType(const TfToken& discoveryType) const = 0;
+};
+
+TF_DECLARE_WEAK_AND_REF_PTRS(NdrDiscoveryPlugin);
+
+class NdrDiscoveryPlugin : public TfRefBase, public TfWeakBase
+{
+public:
+    using Context = NdrDiscoveryPluginContext;
+    NDR_API
+    NdrDiscoveryPlugin();
+    NDR_API
+    virtual ~NdrDiscoveryPlugin();
+    NDR_API
+    virtual NdrNodeDiscoveryResultVec DiscoverNodes(const Context&) = 0;
+    NDR_API
+    virtual const NdrStringVec& GetSearchURIs() const = 0;
+};
+
+class NdrDiscoveryPluginFactoryBase : public TfType::FactoryBase
+{
+public:
+    NDR_API
+    virtual NdrDiscoveryPluginRefPtr New() const = 0;
+};
+
+template <class T>
+class NdrDiscoveryPluginFactory : public NdrDiscoveryPluginFactoryBase
+{
+public:
+    NdrDiscoveryPluginRefPtr New() const override
+    {
+        return TfCreateRefPtr(new T);
+    }
+};
+
+PXR_NAMESPACE_CLOSE_SCOPE
+
+#endif // PXR_USD_NDR_DISCOVERY_PLUGIN_H
+''',
+    "parserPlugin.h": '''\
+//
+// Copyright 2018 Pixar
+//
+// Licensed under the terms set forth in the LICENSE.txt file available at
+// https://openusd.org/license.
+//
+
+#ifndef PXR_USD_NDR_PARSER_PLUGIN_H
+#define PXR_USD_NDR_PARSER_PLUGIN_H
+
+#include "pxr/pxr.h"
+#include "pxr/usd/ndr/api.h"
+#include "pxr/base/tf/type.h"
+#include "pxr/base/tf/weakBase.h"
+#include "pxr/base/tf/weakPtr.h"
+#include "pxr/usd/ndr/declare.h"
+
+PXR_NAMESPACE_OPEN_SCOPE
+
+struct NdrNodeDiscoveryResult;
+
+#define NDR_REGISTER_PARSER_PLUGIN(ParserPluginClass)                   \\
+TF_REGISTRY_FUNCTION(TfType)                                            \\
+{                                                                       \\
+    TfType::Define<ParserPluginClass, TfType::Bases<NdrParserPlugin>>() \\
+        .SetFactory<NdrParserPluginFactory<ParserPluginClass>>();       \\
+}
+
+class NdrParserPlugin : public TfWeakBase
+{
+public:
+    NDR_API
+    NdrParserPlugin();
+    NDR_API
+    virtual ~NdrParserPlugin();
+    NDR_API
+    virtual NdrNodeUniquePtr Parse(const NdrNodeDiscoveryResult& discoveryResult) = 0;
+    NDR_API
+    virtual const NdrTokenVec& GetDiscoveryTypes() const = 0;
+    NDR_API
+    virtual const TfToken& GetSourceType() const = 0;
+    NDR_API
+    static NdrNodeUniquePtr GetInvalidNode(const NdrNodeDiscoveryResult& dr);
+};
+
+class NdrParserPluginFactoryBase : public TfType::FactoryBase
+{
+public:
+    virtual NdrParserPlugin* New() const = 0;
+};
+
+template <class T>
+class NdrParserPluginFactory : public NdrParserPluginFactoryBase
+{
+public:
+    virtual NdrParserPlugin* New() const
+    {
+        return new T;
+    }
+};
+
+PXR_NAMESPACE_CLOSE_SCOPE
+
+#endif // PXR_USD_NDR_PARSER_PLUGIN_H
+''',
+    "nodeDiscoveryResult.h": '''\
+//
+// Copyright 2018 Pixar
+//
+// Licensed under the terms set forth in the LICENSE.txt file available at
+// https://openusd.org/license.
+//
+
+#ifndef PXR_USD_NDR_NODE_DISCOVERY_RESULT_H
+#define PXR_USD_NDR_NODE_DISCOVERY_RESULT_H
+
+#include "pxr/usd/ndr/declare.h"
+
+PXR_NAMESPACE_OPEN_SCOPE
+
+struct NdrNodeDiscoveryResult {
+    NdrNodeDiscoveryResult(
+        const NdrIdentifier& identifier,
+        const NdrVersion& version,
+        const std::string& name,
+        const TfToken& family,
+        const TfToken& discoveryType,
+        const TfToken& sourceType,
+        const std::string& uri,
+        const std::string& resolvedUri,
+        const std::string &sourceCode=std::string(),
+        const NdrTokenMap &metadata=NdrTokenMap(),
+        const std::string& blindData=std::string(),
+        const TfToken& subIdentifier=TfToken()
+    ) : identifier(identifier),
+        version(version),
+        name(name),
+        family(family),
+        discoveryType(discoveryType),
+        sourceType(sourceType),
+        uri(uri),
+        resolvedUri(resolvedUri),
+        sourceCode(sourceCode),
+        metadata(metadata),
+        blindData(blindData),
+        subIdentifier(subIdentifier)
+    { }
+
+    NdrIdentifier identifier;
+    NdrVersion version;
+    std::string name;
+    TfToken family;
+    TfToken discoveryType;
+    TfToken sourceType;
+    std::string uri;
+    std::string resolvedUri;
+    std::string sourceCode;
+    NdrTokenMap metadata;
+    std::string blindData;
+    TfToken subIdentifier;
+};
+
+typedef std::vector<NdrNodeDiscoveryResult> NdrNodeDiscoveryResultVec;
+
+PXR_NAMESPACE_CLOSE_SCOPE
+
+#endif // PXR_USD_NDR_NODE_DISCOVERY_RESULT_H
+''',
+    "debugCodes.h": '''\
+//
+// Copyright 2018 Pixar
+//
+// Licensed under the terms set forth in the LICENSE.txt file available at
+// https://openusd.org/license.
+//
+
+#ifndef PXR_USD_NDR_DEBUG_CODES_H
+#define PXR_USD_NDR_DEBUG_CODES_H
+
+#include "pxr/pxr.h"
+#include "pxr/base/tf/debug.h"
+
+PXR_NAMESPACE_OPEN_SCOPE
+
+TF_DEBUG_CODES(
+    NDR_DISCOVERY,
+    NDR_PARSING,
+    NDR_INFO,
+    NDR_STATS,
+    NDR_DEBUG
+);
+
+PXR_NAMESPACE_CLOSE_SCOPE
+
+#endif // PXR_USD_NDR_DEBUG_CODES_H
+''',
+}
+
+
+def install_ndr_headers(blender_libs_dir):
+    ndr_dir = os.path.join(blender_libs_dir, "usd", "include", "pxr", "usd", "ndr")
+    if os.path.exists(ndr_dir):
+        log("NDR headers already present, skipping.")
+        return
+    os.makedirs(ndr_dir, exist_ok=True)
+    for name, content in NDR_HEADERS.items():
+        with open(os.path.join(ndr_dir, name), "w") as f:
+            f.write(content)
+    log(f"Installed {len(NDR_HEADERS)} NDR header stubs to {ndr_dir}")
 
 
 def main():
@@ -488,6 +826,9 @@ def main():
     else:
         log("Blender libraries already exist, skipping clone.")
 
+    # 3b. Install NDR headers (removed in USD 26.x but needed by OpenMoonray)
+    install_ndr_headers(blender_libs_dir)
+
     # 4. Build dependencies
     os.makedirs(os.path.join(deps_dir, "bin"), exist_ok=True)
 
@@ -504,10 +845,15 @@ def main():
     write_boost_python_config(deps_dir)
 
     # 5. Configure OpenMoonray
+    if os.path.exists(os.path.join(build_dir, "CMakeCache.txt")):
+        log("Cleaning stale build directory...")
+        shutil.rmtree(build_dir)
+        os.makedirs(build_dir, exist_ok=True)
     log("Running CMake configure...")
     cmake_args = [
         "cmake", moonray_dir,
         "-DCMAKE_POLICY_VERSION_MINIMUM=3.5",
+        f"-DCMAKE_PREFIX_PATH={deps_dir}/lib/cmake;{blender_libs_dir}/openimageio/bin",
         f"-DMOONRAY_USE_OPTIX=NO",
         f"-DBUILD_QT_APPS=NO",
         f"-DCMAKE_INSTALL_PREFIX={install_root}",
@@ -532,7 +878,7 @@ def main():
         f"-DOpenImageDenoise_DIR={blender_libs_dir}/openimagedenoise/lib/cmake/OpenImageDenoise",
         f"-DCMAKE_ISPC_COMPILER={deps_dir}/bin/ispc",
         f"-DEmbree_DIR={script_dir}/cmake",
-        f"-DCMAKE_PREFIX_PATH={blender_libs_dir}/openimageio/bin",
+        f"-DCMAKE_CXX_FLAGS=-I/usr/include/python3.{sys.version_info.minor}",
         "-Wno-dev"
     ]
     run_cmd(cmake_args, cwd=build_dir)

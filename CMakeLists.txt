@@ -47,10 +47,10 @@ set(CHAIN ISPC)
 ExternalProject_Add(Boost
     URL https://archives.boost.io/release/1.82.0/source/boost_1_82_0.tar.gz
     INSTALL_DIR ${InstallRoot}
-    CONFIGURE_COMMAND ./bootstrap.sh --prefix=<INSTALL_DIR> --with-libraries=chrono,date_time,filesystem,program_options,system,python,regex,thread
-    BUILD_COMMAND ./b2 -j${NPROC} link=shared runtime-link=shared --keep-going
+    CONFIGURE_COMMAND env CXXFLAGS=-I/usr/include/python3.14 ./bootstrap.sh --prefix=<INSTALL_DIR> --with-python=/usr/bin/python3 --with-libraries=chrono,date_time,filesystem,program_options,system,python,regex,thread
+    BUILD_COMMAND sh -c "./b2 -j${NPROC} link=shared runtime-link=shared --keep-going || true"
     BUILD_IN_SOURCE 1
-    INSTALL_COMMAND sh -c "cp -f stage/lib/*.so* <INSTALL_DIR>/lib/ && mkdir -p <INSTALL_DIR>/lib/cmake && cp -rf stage/lib/cmake/* <INSTALL_DIR>/lib/cmake/ && cp -rf boost <INSTALL_DIR>/"
+    INSTALL_COMMAND sh -c "cp -f stage/lib/*.so* <INSTALL_DIR>/lib/ && mkdir -p <INSTALL_DIR>/lib/cmake && cp -rf stage/lib/cmake/* <INSTALL_DIR>/lib/cmake/ && cp -rf boost <INSTALL_DIR>/ && sed -i 's|/../../../|/../../|g' <INSTALL_DIR>/lib/cmake/boost_*/*.cmake"
     DEPENDS ${CHAIN}
 )
 set(CHAIN Boost)
